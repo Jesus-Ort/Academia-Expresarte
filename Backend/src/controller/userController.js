@@ -56,14 +56,14 @@ export const updateUserName = async (req, res) => {
         return res.status(401).json({ message: "Usuario no autenticado" });
         }
 
-        const { full_name } = req.body;
-        if (!full_name) {
+        const { nombre_completo } = req.body;
+        if (!nombre_completo) {
         return res.status(400).json({ message: "El nombre es obligatorio" });
         }
 
         const { data, error } = await supabase
         .from('profiles')
-        .update({ full_name })
+        .update({ nombre_completo })
         .eq('id', req.user.id);
 
         if (error) {

@@ -87,28 +87,31 @@ import type { FormSubmitEvent } from '@nuxt/ui'
 import { useToast } from '@nuxt/ui/runtime/composables/useToast.js'
 import { useAuth } from '~/composables/useAuth'
 
-const { $api } = useNuxtApp()
-const toast = useToast()
+const config = useRuntimeConfig()
 
+const toast = useToast()
 const loading = ref(false)
 const showPassword = ref(false)
 
 // Esquema Yup
 const schema = yup.object({
     email: yup
-    .string()
-    .email('Correo electrónico no válido')
-    .required('Se requiere correo electrónico'),
+        .string()
+        .trim()
+        .email('Correo electrónico no válido')
+        .required('Se requiere correo electrónico'),
+
     password: yup
-    .string()
-    .matches(/^[^<>[\]{}^`]+$/, 'No se permiten los caracteres < > [ ] { } ` ^')
-    .min(6, 'La contraseña debe tener al menos 6 caracteres')
-    .required('Se requiere contraseña'),
+        .string()
+        .trim()
+        .min(6, 'La contraseña debe tener al menos 6 caracteres')
+        .matches(/^[^\s<>[\]{}^`]+$/, 'Caracteres no permitidos')
+        .required('Se requiere contraseña'),
 })
 
 type Schema = InferType<typeof schema>
 
-const state = reactive({
+const state = reactive<Schema>({
     email: '',
     password: '',
 })
@@ -118,16 +121,24 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
         loading.value = true
 
         const { isLogged } = useAuth()
-        const res = await $api.post('/api/v1/auth/login', event.data)
 
-        localStorage.setItem('access_token', res.data.access_token)
-        localStorage.setItem('refresh_token', res.data.refresh_token)
+    const res = await $fetch<{ access_token: string; refresh_token: string }>('/api/v1/auth/login', {
+        baseURL: config.public.apiBase,
+        method: 'POST',
+        body: {
+            email: event.data.email.trim(),
+            password: event.data.password
+        }
+    })
+
+    localStorage.setItem('access_token', res.access_token)
+    localStorage.setItem('refresh_token', res.refresh_token)
 
         isLogged.value = true
 
         toast.add({
         title: 'Sesión iniciada',
-        description: 'Ahora puedes usar la app.',
+        description: 'Bienvenido al Sistema de Expresarte.',
         color: 'success'
         })
 
@@ -137,15 +148,25 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
     } catch (error: any) {
 
         const message =
-        error?.response?.data?.message ||
-        error?.response?.data?.error ||
-        'No se pudo iniciar la sesión'
+            error?.data?.message ||
+            error?.data?.error ||
+            error?.message ||
+            'No se pudo iniciar la sesión'
 
         toast.add({
         title: 'Error',
         description: message,
         color: 'error'
         })
+
+        if (message.includes('confirm')) {
+            toast.add({
+                title: 'Correo no confirmado',
+                description: 'Revisa tu bandeja de entrada antes de iniciar sesión.',
+                color: 'warning'
+            })
+        }
+
     } finally {
         loading.value = false
     }

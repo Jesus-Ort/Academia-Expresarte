@@ -13,20 +13,35 @@ export const register = async (req, res) => {
         direccion,
         } = req.body
 
-        if (!email || !password || nombre_completo || cedula || fecha_nacimiento || telefono || direccion ){
+        if (!email || !password || !nombre_completo || !cedula || !fecha_nacimiento || !telefono || !direccion ){
             return res.status(400).json({message: 'Todos los campos son obligatorios'});
         }
 
-        const currentFecha = new Date().getFullYear()
+        // Parsear fecha 
+        const birthDate = new Date(fecha_nacimiento)
+        if (isNaN(birthDate.getTime())) {
+            return res.status(400).json({
+                message: 'Fecha de nacimiento inválida'
+            })
+        }
 
-        const edad = currentFecha - fecha_nacimiento
+        // Calcular edad 
+        const today = new Date()
+        let edad = today.getFullYear() - birthDate.getFullYear()
 
-        if ( edad < 18 ){
-            return res.status(400).json({message:'El representante debe ser mayor de edad'});
+        const m = today.getMonth() - birthDate.getMonth()
+        if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+            edad--
+        }
+
+        if (edad < 18) {
+            return res.status(400).json({
+                message: 'El representante debe ser mayor de edad'
+            })
         }
 
         const { data: authData, error: authError } = await supabase.auth.signUp({
-            email,
+            email: email.trim(),
             password
         });
 
@@ -35,6 +50,7 @@ export const register = async (req, res) => {
         }
 
         const user_id = authData.user?.id;
+
         if(!user_id){
             return res.status(500).json({ message: 'No se pudo obtener el ID del usuario' })
         }
@@ -44,13 +60,13 @@ export const register = async (req, res) => {
         .insert([
             {
                 id: user_id,
-                nombre_completo,
-                cedula,
+                nombre_completo: nombre_completo.trim(),
+                cedula: cedula.trim(),
                 fecha_nacimiento,
-                telefono,
-                direccion
+                telefono: telefono.trim(),
+                direccion: direccion.trim()
             }
-        ]);
+        ])
 
         if (userTableError) {
             return res.status(400).json({message: 'Error al insertar el nuevo usuario', error: userTableError.message});
