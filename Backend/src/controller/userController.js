@@ -1,5 +1,40 @@
 import { supabase } from '../config/supabase.js'
 
+// Cargar usuarios
+export const getUsers = async (req, res) => {
+    try {
+        
+        if(!req.user){
+            return res.status(401).json({
+                message: "Usuario no autenticado"
+            });
+        }
+        
+        const {data, error} = await supabase
+        .from("profiles")
+        .select("*")
+        .eq("is_active", true)
+
+        if (error) {
+        console.error(error)
+
+        return res.status(500).json({
+            message: "Internal server error"
+        })
+        }
+
+        res.json({
+            data
+        })
+    } catch (err) {
+        console.error(err)
+
+        res.status(500).json({
+            message: "Internal server error"
+        })
+    }
+}
+
 // Cambiar correo
 export const updateEmail = async (req, res) => {
     try {

@@ -20,7 +20,7 @@ app.get('/test', (req, res) => {
 
 // Rutas
 app.use("/api/v1/auth", authRoutes); 
-app.use("/api/v1/user/", verifyToken, userRoutes); 
+app.use("/api/v1/users/", verifyToken, userRoutes); 
 
 app.listen(PORT, () => {
     console.log(`Servidor corriendo en http://localhost:${PORT}`)
