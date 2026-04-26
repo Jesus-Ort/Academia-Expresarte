@@ -21,20 +21,22 @@
     :state="form"
     :schema="config.schema"
     :loading="loadingForm"
-    submit-text="Guardar"
+    :submitText="submitLabel"
     @submit="handleSubmit"
   >
-    <template v-for="f in config.fields" :key="f.key">
-      <UFormField :label="f.label" :name="f.key">
-        <UInput v-model="form[f.key]" class="w-full" />
-      </UFormField>
-    </template>
+    <FormBuilder
+      :fields="config.fields"
+      :form="form"
+      :editId="editId"
+    />
   </BaseFormModal>
 </template>
 
 <script setup lang="ts">
 import type { Row } from '@tanstack/vue-table'
 import { useApi } from '~/composables/useApi';
+import { useFormBuilder } from '~/composables/useFormBuilder'
+import FormBuilder from './Base/FormBuilder.vue';
 
 const { api } = useApi()
 
@@ -57,11 +59,23 @@ const loadingForm = ref(false)
 const data = ref<any[]>([])
 const editId = ref<string | null>(null)
 
-const form = reactive({ ...props.config.form.initial })
+const form = reactive({})
+
+const resetForm = () => {
+  Object.assign(form, props.config.form.initial)
+}
+
+const { buildPayload } = useFormBuilder(form, editId, props.config.fields)
 
 const modalTitle = computed(() =>
   editId.value
     ? `Editar ${props.config.title}`
+    : `Crear ${props.config.title}`
+)
+
+const submitLabel = computed(() =>
+  editId.value
+    ? `Actualizar ${props.config.title}`
     : `Crear ${props.config.title}`
 )
 
@@ -86,7 +100,7 @@ const load = async () => {
 // ----------------------
 const openCreate = () => {
   editId.value = null
-  Object.assign(form, props.config.form.initial)
+  resetForm()
   open.value = true
 }
 
@@ -106,10 +120,12 @@ const handleSubmit = async (values: any) => {
   loadingForm.value = true
 
   try {
+    const payload = buildPayload(values)
+
     if (!editId.value) {
-      await api.post(resource.value.create, values)
+      await api.post(resource.value.create, payload)
     } else {
-      await api.put(resource.value.update(editId.value), values)
+      await api.put(resource.value.update(editId.value), payload)
     }
 
     open.value = false
@@ -156,5 +172,8 @@ const columns = computed(() => {
   return base
 })
 
-onMounted(load)
+onMounted(() => {
+  resetForm()
+  load()
+})
 </script>

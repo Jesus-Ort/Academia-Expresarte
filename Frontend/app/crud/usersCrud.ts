@@ -1,7 +1,7 @@
 import * as yup from 'yup'
 
 export const usersCrud = {
-    title: 'Usuarios',
+    title: 'Usuario',
 
     apiBase: {
         list: '/api/v1/users',
@@ -47,17 +47,19 @@ export const usersCrud = {
         .required('Se requiere la dirección'),
     
     rol: yup
-    .string()
+        .string()
+        .oneOf(['admin', 'representante'])
+        .required('El rol es requerido')
     }),
 
     form: {
         initial: {
-        nombre_completo: '',
-        cedula: '',
-        fecha_nacimiento: '',
-        telefono: '',
-        direccion: '',
-        rol: ''
+            nombre_completo: '',
+            cedula: '',
+            fecha_nacimiento: '',
+            telefono: '',
+            direccion: '',
+            rol: ''
         }
     },
 
@@ -65,8 +67,18 @@ export const usersCrud = {
         { key: 'nombre_completo', label: 'Nombre Completo' },
         { key: 'cedula', label: 'Cédula' },
         { key: 'fecha_nacimiento', label: 'Fecha de Nacimiento' },
+        { key: 'edad', label: 'Edad' },
         { key: 'telefono', label: 'Teléfono' },
         { key: 'direccion', label: 'Dirección' },
-        { key: 'rol', label: 'Rol' },
-    ]
+        {
+        key: 'rol',
+        label: 'Rol',
+        type: 'select',
+        options: [
+            { label: 'Admin', value: 'admin' },
+            { label: 'Representante', value: 'representante' }
+        ]
+        },
+    ],
+    
 }

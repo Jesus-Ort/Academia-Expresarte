@@ -11,9 +11,8 @@ export const getUsers = async (req, res) => {
         }
         
         const {data, error} = await supabase
-        .from("profiles")
+        .from("v_profiles_representatives")
         .select("*")
-        .eq("is_active", true)
 
         if (error) {
         console.error(error)

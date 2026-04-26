@@ -28,7 +28,7 @@
             :ui="{ content: 'w-48' }"
         >
             <UButton
-            icon="i-heroicons-user"
+            icon="i-heroicons-bars-3"
             color="neutral"
             variant="outline"
             />
@@ -67,12 +67,19 @@ const items: DropdownMenuItem[][] = [
         label: 'Transacciones',
         icon: 'i-heroicons-arrows-right-left',
         to: '/transactions'
+        }
+    ],
+    [
+        {
+        label: 'Usuarios',
+        icon: 'i-heroicons-user',
+        to: '/profiles'
         },
         {
-        label: 'Categorías',
-        icon: 'i-heroicons-tag',
-        to: '/categories'
-        }
+        label: 'Estudiantes',
+        icon: 'i-heroicons-user',
+        to: '/students'
+        },
     ],
     [
         {
