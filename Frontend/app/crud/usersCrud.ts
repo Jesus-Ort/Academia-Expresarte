@@ -48,7 +48,7 @@ export const usersCrud = {
     
     rol: yup
         .string()
-        .oneOf(['admin', 'representante'])
+        .oneOf(['admin', 'representante'], "Debe ser una de las opciones")
         .required('El rol es requerido')
     }),
 

@@ -38,7 +38,7 @@
         <USelect
             v-else-if="f.type === 'select'"
             v-model="form[f.key]"
-            :options="f.options"
+            :items="f.options"
             :multiple="f.multiple"
             class="w-full"
         />
