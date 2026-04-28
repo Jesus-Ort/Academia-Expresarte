@@ -4,7 +4,7 @@
     :columns="columns"
     :loading="loadingTable"
   >
-    <template #agregar>
+    <template #agregar v-if="!config.disableCreate">
       <UButton
         color="primary"
         icon="i-heroicons-plus"
@@ -36,6 +36,7 @@
 import type { Row } from '@tanstack/vue-table'
 import { useApi } from '~/composables/useApi';
 import { useFormBuilder } from '~/composables/useFormBuilder'
+import { useToast } from '@nuxt/ui/runtime/composables/useToast.js'
 import FormBuilder from './Base/FormBuilder.vue';
 
 const { api } = useApi()
@@ -43,6 +44,8 @@ const { api } = useApi()
 const props = defineProps<{
   config: any
 }>()
+
+const toast = useToast()
 
 const resource = computed(() => {
   if (!props.config?.apiBase) {
@@ -90,6 +93,10 @@ const load = async () => {
     const res = await api.get(resource.value.list)
 
     data.value = res.data ?? res
+    
+    toast.add({ title: 'Éxito', description: 'Lista cargada correctamente', color: 'success' })
+  } catch (err: any) {
+    toast.add({ title: 'Error', description: err?.response?.data?.message || 'Error al cargar la lista', color: 'error' })
   } finally {
     loadingTable.value = false
   }
@@ -99,11 +106,12 @@ const load = async () => {
 // CREATE
 // ----------------------
 const openCreate = () => {
+  if (props.config.disableCreate) return
+
   editId.value = null
   resetForm()
   open.value = true
 }
-
 // ----------------------
 // EDIT
 // ----------------------
@@ -124,27 +132,48 @@ const handleSubmit = async (values: any) => {
 
     if (!editId.value) {
       await api.post(resource.value.create, payload)
+      toast.add({ title: 'Éxito', description: `${props.config.title} creado correctamente`, color: 'success' })
     } else {
-      await api.put(resource.value.update(editId.value), payload)
+      await api.patch(resource.value.update(editId.value), payload)
+      toast.add({ title: 'Éxito', description: `${props.config.title} actualizado correctamente`, color: 'success' })
     }
 
     open.value = false
     await load()
 
+  } catch (err: any) {
+    toast.add({ title: 'Error', description: err?.response?.data?.message || `Error al guardar ${props.config.title}`, color: 'error' })
   } finally {
     loadingForm.value = false
   }
+}
+
+const getValue = (obj: any, path: string) => {
+  return path.split('.').reduce((acc, key) => acc?.[key], obj)
 }
 
 // ----------------------
 // COLUMNS AUTO (simple)
 // ----------------------
 const columns = computed(() => {
-  const base = props.config.fields.map((f: any) => ({
-    accessorKey: f.key,
-    header: f.label
-  }))
+  const base = props.config.fields.map((f: any) => {
 
+    if (f.display) {
+      return {
+        id: f.key,
+        header: f.label,
+        cell: ({ row }: any) =>
+          getValue(row.original, f.display)
+      }
+    }
+
+    return {
+      accessorKey: f.key,
+      header: f.label
+    }
+  })
+
+  // Acciones
   base.push({
     id: 'actions',
     cell: ({ row }: { row: Row<any> }) => {
@@ -161,8 +190,13 @@ const columns = computed(() => {
           color: 'error',
           icon: 'i-lucide-trash',
           onClick: async () => {
-            await api.delete(resource.value.delete(row.original.id))
-            await load()
+            try {
+              await api.delete(resource.value.delete(row.original.id))
+              toast.add({ title: 'Éxito', description: `${props.config.title} eliminado correctamente`, color: 'success' })
+              await load()
+            } catch (err: any) {
+              toast.add({ title: 'Error', description: err?.response?.data?.message || `Error al eliminar ${props.config.title}`, color: 'error' })
+            }
           }
         })
       ])

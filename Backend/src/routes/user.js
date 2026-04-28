@@ -1,10 +1,16 @@
 import { Router } from "express";
-import { updateEmail, updatePassword, updateUserName, getUsers } from "../controller/userController.js";
+import { updateEmail, updatePassword, updateUserName, getUsers, patchUsers, delUsers } from "../controller/userController.js";
 
 const router = Router();
 
 // Cargar usuarios
 router.get("/", getUsers);
+
+// Editar usuarios
+router.patch("/:id", patchUsers);
+
+// Eliminar usuarios
+router.delete("/:id", delUsers);
 
 // Cambiar correo
 router.put("/email", updateEmail);

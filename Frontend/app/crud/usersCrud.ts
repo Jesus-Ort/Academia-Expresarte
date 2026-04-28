@@ -3,9 +3,11 @@ import * as yup from 'yup'
 export const usersCrud = {
     title: 'Usuario',
 
+    disableCreate: true,
+
     apiBase: {
         list: '/api/v1/users',
-        create: '/api/v1/users',
+        create: '',
         update: (id: string) => `/api/v1/users/${id}`,
         delete: (id: string) => `/api/v1/users/${id}`
     },

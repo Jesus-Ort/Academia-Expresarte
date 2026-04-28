@@ -1,5 +1,7 @@
 <script setup lang="ts">
     import { useFormBuilder } from '~/composables/useFormBuilder';
+    import { useRelations } from '~/composables/useRelations'
+
     const props = defineProps<{
     fields: any[]
     form: Record<string, any>
@@ -11,6 +13,31 @@
 
     const { visibleFields, isDisabled, onFileChange } =
     useFormBuilder(props.form, editIdRef, props.fields)
+
+    const { getOptions } = useRelations()
+
+    const relationOptions = reactive<Record<string, any[]>>({})
+    const loadingRelations = reactive<Record<string, boolean>>({})
+
+    const form = props.form
+
+    const loadRelation = async (field: any) => {
+        loadingRelations[field.key] = true
+
+        try {
+            relationOptions[field.key] = await getOptions(field, form)
+        } finally {
+            loadingRelations[field.key] = false
+        }
+    }
+
+    onMounted(() => {
+        props.fields.forEach(field => {
+            if (field.type === 'relation') {
+            loadRelation(field)
+            }
+        })
+    })
 </script>
 
 <template>
@@ -41,6 +68,14 @@
             :items="f.options"
             :multiple="f.multiple"
             class="w-full"
+        />
+
+        <!-- RELATIONS -->
+        <USelect
+            v-else-if="f.type === 'relation'"
+            v-model="form[f.key]"
+            :items="relationOptions[f.key]"
+            :loading="loadingRelations[f.key]"
         />
 
         <!-- DATE -->

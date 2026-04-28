@@ -134,6 +134,9 @@ export const useApi = () => {
         put: (url: string, body: any) =>
         request(url, { method: 'PUT', body }),
 
+        patch: (url: string, body: any) =>
+        request(url, { method: 'PATCH', body }),
+
         delete: (url: string) =>
         request(url, { method: 'DELETE' })
     }
