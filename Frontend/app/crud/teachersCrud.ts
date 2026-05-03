@@ -1,15 +1,13 @@
 import * as yup from 'yup'
 
-export const usersCrud = {
-    title: 'Usuario',
-
-    disableCreate: true,
+export const teachersCrud = {
+    title: 'Profesores',
 
     apiBase: {
-        list: '/api/v1/users',
-        create: '',
-        update: (id: string) => `/api/v1/users/${id}`,
-        delete: (id: string) => `/api/v1/users/${id}`
+        list: '/api/v1/teachers',
+        create: '/api/v1/teachers',
+        update: (id: string) => `/api/v1/teachers/${id}`,
+        delete: (id: string) => `/api/v1/teachers/${id}`
     },
 
     schema: yup.object({
@@ -48,10 +46,6 @@ export const usersCrud = {
         .min(5, 'Dirección muy corta')
         .required('Se requiere la dirección'),
     
-    rol: yup
-        .string()
-        .oneOf(['admin', 'representante'], "Debe ser una de las opciones")
-        .required('El rol es requerido')
     }),
 
     form: {
@@ -61,26 +55,16 @@ export const usersCrud = {
             fecha_nacimiento: '',
             telefono: '',
             direccion: '',
-            rol: ''
         }
     },
 
     fields: [
         { key: 'nombre_completo', label: 'Nombre Completo', type: 'text' },
-        { key: 'cedula', label: 'Cédula', type: 'text' },
-        { key: 'fecha_nacimiento', label: 'Fecha de Nacimiento',  type: 'date' },
-        { key: 'edad', label: 'Edad', disabledOnEdit:true, showOnCreate:false },
-        { key: 'telefono', label: 'Teléfono', type: 'text' },
-        { key: 'direccion', label: 'Dirección', type: 'text' },
-        {
-        key: 'rol',
-        label: 'Rol',
-        type: 'select',
-        options: [
-            { label: 'Admin', value: 'admin' },
-            { label: 'Representante', value: 'representante' }
-        ]
-        },
+        { key: 'cedula', label: 'Cédula', type: 'text'  },
+        { key: 'fecha_nacimiento', label: 'Fecha de Nacimiento', type: 'date' },
+        { key: 'edad', label: 'Edad', type: 'text', disabledOnEdit:true, showOnCreate:false },
+        { key: 'telefono', label: 'Teléfono', type: 'text'  },
+        { key: 'direccion', label: 'Dirección', type: 'text'  },
     ],
     
 }

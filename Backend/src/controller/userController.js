@@ -106,7 +106,7 @@ export const patchUsers = async (req, res) => {
         message: 'Usuario actualizado exitosamente.',
         });
     } catch (err) {
-        console.error("ERROR EN putUser:", err)
+        console.error("ERROR EN patchUsers:", err)
 
         res.status(500).json({
             message: "Internal server error"

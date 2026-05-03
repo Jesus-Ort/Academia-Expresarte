@@ -63,11 +63,6 @@ const items: DropdownMenuItem[][] = [
         icon: 'i-heroicons-home',
         to: '/home'
         },
-        {
-        label: 'Transacciones',
-        icon: 'i-heroicons-arrows-right-left',
-        to: '/transactions'
-        }
     ],
     [
         {
@@ -79,6 +74,11 @@ const items: DropdownMenuItem[][] = [
         label: 'Estudiantes',
         icon: 'i-heroicons-user',
         to: '/students'
+        },
+        {
+        label: 'Profesores',
+        icon: 'i-heroicons-user',
+        to: '/teachers'
         },
     ],
     [

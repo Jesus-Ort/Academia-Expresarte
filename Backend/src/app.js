@@ -6,6 +6,7 @@ import { verifyToken } from './middlewares/verifyToken.js'
 import authRoutes from "./routes/auth.js";
 import userRoutes from "./routes/user.js";
 import studentRoutes from "./routes/student.js"
+import teachersRoutes from "./routes/teachers.js"
 
 const PORT = process.env.PORT || 3001
 const app = express()
@@ -22,6 +23,7 @@ app.get('/test', (req, res) => {
 app.use("/api/v1/auth", authRoutes); 
 app.use("/api/v1/users/", verifyToken, userRoutes); 
 app.use("/api/v1/students/", verifyToken, studentRoutes); 
+app.use("/api/v1/teachers/", verifyToken, teachersRoutes); 
 
 app.listen(PORT, () => {
     console.log(`Servidor corriendo en http://localhost:${PORT}`)

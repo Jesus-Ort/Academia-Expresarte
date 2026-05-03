@@ -1,7 +1,7 @@
 import { supabase } from '../config/supabase.js'
 
-// Cargar estudiantes
-export const getStudents = async (req, res) => {
+// Cargar profesores
+export const getTeachers = async (req, res) => {
     try {
         
         if(!req.user){
@@ -11,7 +11,7 @@ export const getStudents = async (req, res) => {
         }
         
         const {data, error} = await supabase
-        .from("v_students_with_age")
+        .from("v_teachers_full")
         .select("*")
 
         if (error) {
@@ -26,7 +26,7 @@ export const getStudents = async (req, res) => {
             data
         })
     } catch (err) {
-        console.error("ERROR EN getStudents:", err)
+        console.error("ERROR EN getTeachers:", err)
 
         res.status(500).json({
             message: "Internal server error"
@@ -34,16 +34,18 @@ export const getStudents = async (req, res) => {
     }
 }
 
-// Registrar estudiante
-export const postStudents = async (req, res) => {
+// Registrar profesores
+export const postTeachers = async (req, res) => {
     try {
         const {
         nombre_completo,
         cedula,
         fecha_nacimiento,
+        telefono,
+        direccion,
         } = req.body
 
-        if (!nombre_completo || !cedula || !fecha_nacimiento){
+        if (!nombre_completo || !cedula || !fecha_nacimiento || !telefono || !direccion ){
             return res.status(400).json({message: 'Todos los campos son obligatorios'});
         }
 
@@ -55,24 +57,41 @@ export const postStudents = async (req, res) => {
             })
         }
 
+        // Calcular edad 
+        const today = new Date()
+        let edad = today.getFullYear() - birthDate.getFullYear()
+
+        const m = today.getMonth() - birthDate.getMonth()
+        if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+            edad--
+        }
+
+        if (edad < 18) {
+            return res.status(400).json({
+                message: 'El profesor debe ser mayor de edad'
+            })
+        }
+
         if(!req.user){
             return res.status(401).json({
                 message: "Usuario no autenticado"
             });
         }
 
-        const {data:studentData, error: studentError} = await supabase
-        .from("students")
+        const {data:teachersData, error: teachersError} = await supabase
+        .from("teachers")
         .insert([
             {
                 nombre_completo: nombre_completo.trim(),
                 cedula: cedula.trim(),
                 fecha_nacimiento,
+                telefono: telefono.trim(),
+                direccion: direccion.trim(),
             }
         ])
 
-        if (studentError) {
-            return res.status(400).json({message: 'Error al insertar el nuevo estudiante', error: studentError.message});
+        if (teachersError) {
+            return res.status(400).json({message: 'Error al insertar el nuevo profesor', error: teachersError.message});
         }
 
         res.status(201).json({
@@ -87,20 +106,22 @@ export const postStudents = async (req, res) => {
     }
 }
 
-// Editar usuario 
-export const patchStudents = async (req, res) => {
+// Editar profesores 
+export const patchTeachers = async (req, res) => {
     try {
 
         const { id } = req.params
-        if (!id) return res.status(400).json({ message: "Id del usuario requerido" })
+        if (!id) return res.status(400).json({ message: "Id del profesor requerido" })
 
         const {
         nombre_completo,
         cedula,
         fecha_nacimiento,
+        telefono,
+        direccion,
         } = req.body
 
-        if (!nombre_completo || !cedula || !fecha_nacimiento ){
+        if (!nombre_completo || !cedula || !fecha_nacimiento || !telefono || !direccion ){
             return res.status(400).json({message: 'Todos los campos son obligatorios'});
         }
 
@@ -112,33 +133,50 @@ export const patchStudents = async (req, res) => {
             })
         }
 
+        // Calcular edad 
+        const today = new Date()
+        let edad = today.getFullYear() - birthDate.getFullYear()
+
+        const m = today.getMonth() - birthDate.getMonth()
+        if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+            edad--
+        }
+
+        if (edad < 18) {
+            return res.status(400).json({
+                message: 'El profesor debe ser mayor de edad'
+            })
+        }
+
         if(!req.user){
             return res.status(401).json({
                 message: "Usuario no autenticado"
             });
         }
 
-        const {data:studentsData, error: studentsError} = await supabase
-        .from("students")
+        const {data:teachersData, error: teachersError} = await supabase
+        .from("teachers")
         .update([
             {
                 nombre_completo: nombre_completo.trim(),
                 cedula: cedula.trim(),
                 fecha_nacimiento,
+                telefono: telefono.trim(),
+                direccion: direccion.trim(),
             }
         ])
         .eq("id",id)
         .select()
 
-        if (studentsError) {
-            return res.status(400).json({message: 'Error al actualizar el estudiante', error: studentsError.message});
+        if (teachersError) {
+            return res.status(400).json({message: 'Error al actualizar el profesor', error: teachersError.message});
         }
 
         res.status(201).json({
-        message: 'Estudiante actualizado exitosamente.',
+        message: 'Usuario actualizado exitosamente.',
         });
     } catch (err) {
-        console.error("ERROR EN patchStudents:", err)
+        console.error("ERROR EN putUser:", err)
 
         res.status(500).json({
             message: "Internal server error"
@@ -146,11 +184,11 @@ export const patchStudents = async (req, res) => {
     }
 }
 
-// Eliminar estudiante
-export const delStudents = async (req,res) => {
+// Eliminar profesores
+export const delTeachers = async (req,res) => {
     try {
         const { id } = req.params
-        if (!id) return res.status(400).json({ message: "Id del estudiante requerido" })
+        if (!id) return res.status(400).json({ message: "Id del usuario requerido" })
 
         if(!req.user){
             return res.status(401).json({
@@ -160,16 +198,16 @@ export const delStudents = async (req,res) => {
 
         // Eliminar de forma logica
         const { data, error } = await supabase
-        .from("students")
+        .from("teachers")
         .update({ is_active: false })
         .eq("id", id)
         .select()
 
         // Respuesta al front
-        return res.json({ message: "Estudiante eliminado correctamente"})
+        return res.json({ message: "Usuario eliminado correctamente"})
 
     } catch (err) {
-        console.error("ERROR EN delStudents:", err);
+        console.error("ERROR EN delUser:", err);
         res.status(500).json({ error: err.message });
     }
 }
