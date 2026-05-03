@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { postStudents, getStudents, patchStudents, delStudents} from "../controller/studentController.js";
+import { postStudents, getStudents, patchStudents, delStudents} from "../controller/studentsController.js";
 
 const router = Router();
 

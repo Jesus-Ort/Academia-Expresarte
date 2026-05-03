@@ -80,6 +80,11 @@ const items: DropdownMenuItem[][] = [
         icon: 'i-heroicons-user',
         to: '/teachers'
         },
+        {
+        label: 'Catedras',
+        icon: 'i-heroicons-user',
+        to: '/subjects'
+        },
     ],
     [
         {
