@@ -121,7 +121,7 @@ export const patchStudentRepresentatives = async (req, res) => {
         }
 
         res.status(201).json({
-        message: 'Represenado actualizado exitosamente.',
+        message: 'Representado actualizado exitosamente.',
         });
     } catch (err) {
         console.error("ERROR EN patchStudentRepresentatives:", err)

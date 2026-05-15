@@ -1,7 +1,7 @@
 import * as yup from 'yup'
 
 export const subjectsCrud = {
-    title: 'Catedras',
+    title: 'Catedra',
 
     apiBase: {
         list: '/api/v1/subjects',

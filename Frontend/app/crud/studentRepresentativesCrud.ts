@@ -1,7 +1,7 @@
 import * as yup from 'yup'
 
 export const studentRepresentativesCrud = {
-    title: 'Representados',
+    title: 'Representado',
 
     apiBase: {
         list: '/api/v1/studentsRepresentatives',

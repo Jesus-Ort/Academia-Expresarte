@@ -90,6 +90,11 @@ const items: DropdownMenuItem[][] = [
         icon: 'i-heroicons-user',
         to: '/studentRepresentatives'
         },
+        {
+        label: 'Clases',
+        icon: 'i-heroicons-user',
+        to: '/teacherSubjects'
+        },
     ],
     [
         {

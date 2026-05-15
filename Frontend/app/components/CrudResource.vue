@@ -10,7 +10,7 @@
         icon="i-heroicons-plus"
         @click="openCreate"
       >
-        Nuevo {{ config.title }}
+        Agregar {{ config.title }}
       </UButton>
     </template>
   </BaseTable>
