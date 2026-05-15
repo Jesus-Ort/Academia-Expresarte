@@ -87,12 +87,12 @@ export const postStudents = async (req, res) => {
     }
 }
 
-// Editar usuario 
+// Editar estudiante 
 export const patchStudents = async (req, res) => {
     try {
 
         const { id } = req.params
-        if (!id) return res.status(400).json({ message: "Id del usuario requerido" })
+        if (!id) return res.status(400).json({ message: "Id del estudiante requerido" })
 
         const {
         nombre_completo,

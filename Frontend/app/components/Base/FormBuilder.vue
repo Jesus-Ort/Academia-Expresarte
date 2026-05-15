@@ -76,6 +76,7 @@
             v-model="form[f.key]"
             :items="relationOptions[f.key]"
             :loading="loadingRelations[f.key]"
+            class="w-full"
         />
 
         <!-- DATE -->

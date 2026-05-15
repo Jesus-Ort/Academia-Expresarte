@@ -85,6 +85,11 @@ const items: DropdownMenuItem[][] = [
         icon: 'i-heroicons-user',
         to: '/subjects'
         },
+        {
+        label: 'Representados',
+        icon: 'i-heroicons-user',
+        to: '/studentRepresentatives'
+        },
     ],
     [
         {

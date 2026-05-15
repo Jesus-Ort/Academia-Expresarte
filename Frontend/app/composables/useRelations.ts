@@ -1,4 +1,8 @@
+import { useApi } from '~/composables/useApi'
+
 export const useRelations = () => {
+
+    const { api } = useApi()
 
     const cache = reactive<Record<string, any[]>>({})
 
@@ -12,7 +16,7 @@ export const useRelations = () => {
 
         if (cache[url]) return cache[url]
 
-        const res = await $fetch(url)
+        const res = await api.get(url)
 
         cache[url] = res.data ?? res
 
