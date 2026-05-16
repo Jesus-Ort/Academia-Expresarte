@@ -9,7 +9,7 @@ import studentsRoutes from "./routes/student.js"
 import teachersRoutes from "./routes/teachers.js"
 import subjectsRoutes from "./routes/subject.js"
 import studentsRepresentativesRoutes from "./routes/studentRepresentatives.js"
-import teacherSubjectsRoutes from "./routes/teacherSubjects.js"
+import schedulesRoutes from "./routes/schedules.js"
 
 const PORT = process.env.PORT || 3001
 const app = express()
@@ -29,7 +29,7 @@ app.use("/api/v1/students", verifyToken, studentsRoutes);
 app.use("/api/v1/teachers", verifyToken, teachersRoutes); 
 app.use("/api/v1/subjects", verifyToken, subjectsRoutes); 
 app.use("/api/v1/studentsRepresentatives", verifyToken, studentsRepresentativesRoutes);
-app.use("/api/v1/teacherSubjects", verifyToken, teacherSubjectsRoutes);
+app.use("/api/v1/schedules", verifyToken, schedulesRoutes);
 
 app.listen(PORT, () => {
     console.log(`Servidor corriendo en http://localhost:${PORT}`)

@@ -1,7 +1,7 @@
 import { supabase } from '../config/supabase.js'
 
-// Cargar clases
-export const getTeacherSubjects = async (req, res) => {
+// Cargar horarios
+export const getSchedules = async (req, res) => {
     try {
         
         if(!req.user){
@@ -10,11 +10,9 @@ export const getTeacherSubjects = async (req, res) => {
             });
         }
         
-        // Seleccionar clases incluyendo datos relacionados (nombre del profesor y catedra)
         const {data, error} = await supabase
-        .from("teacher_subjects")
-        .select(`*, teacher:teacher_id(nombre_completo), subject:subject_id(catedra)`)
-        .eq("is_active", true)
+        .from("v_schedules_full")
+        .select(`*`)
 
         if (error) {
         console.error(error)
@@ -28,7 +26,7 @@ export const getTeacherSubjects = async (req, res) => {
             data
         })
     } catch (err) {
-        console.error("ERROR EN getTeacherSubjects:", err)
+        console.error("ERROR EN getSchedules:", err)
 
         res.status(500).json({
             message: "Internal server error"
@@ -36,15 +34,18 @@ export const getTeacherSubjects = async (req, res) => {
     }
 }
 
-// Registrar clase
-export const postTeacherSubjects = async (req, res) => {
+// Registrar horario
+export const postSchedules = async (req, res) => {
     try {
         const {
         teacher_id,
         subject_id,
+        day_of_week,
+        start_time,
+        end_time,
         } = req.body
 
-        if (!teacher_id || !subject_id){
+        if (!teacher_id || !subject_id || !day_of_week || !start_time || !end_time){
             return res.status(400).json({message: 'Todos los campos son obligatorios'});
         }
 
@@ -54,24 +55,27 @@ export const postTeacherSubjects = async (req, res) => {
             });
         }
 
-        const {data:teacherSubjectsData, error: teacherSubjectsError} = await supabase
-        .from("teacher_subjects")
+        const {data:schedulesData, error: schedulesError} = await supabase
+        .from("schedules")
         .insert([
             {
                 teacher_id,
                 subject_id,
+                day_of_week,
+                start_time,
+                end_time,
             }
         ])
 
-        if (teacherSubjectsError) {
-            return res.status(400).json({message: 'Error al insertar la nueva clase', error: teacherSubjectsError.message});
+        if (schedulesError) {
+            return res.status(400).json({message: 'Error al insertar el nuevo horario', error: schedulesError.message});
         }
 
         res.status(201).json({
         message: 'Registro enviado exitosamente.',
         });
     } catch (err) {
-        console.error("ERROR EN postTeacherSubjects:", err)
+        console.error("ERROR EN postSchedules:", err)
 
         res.status(500).json({
             message: "Internal server error"
@@ -79,19 +83,22 @@ export const postTeacherSubjects = async (req, res) => {
     }
 }
 
-// Editar clase
-export const patchTeacherSubjects = async (req, res) => {
+// Editar horario
+export const patchSchedules = async (req, res) => {
     try {
 
         const { id } = req.params
-        if (!id) return res.status(400).json({ message: "Id de la clase requerido" })
+        if (!id) return res.status(400).json({ message: "Id del horario requerido" })
 
         const {
         teacher_id,
         subject_id,
+        day_of_week,
+        start_time,
+        end_time
         } = req.body
 
-        if (!teacher_id || !subject_id){
+        if (!teacher_id || !subject_id ||!day_of_week || !start_time || !end_time){
             return res.status(400).json({message: 'Todos los campos son obligatorios'});
         }
 
@@ -101,26 +108,29 @@ export const patchTeacherSubjects = async (req, res) => {
             });
         }
 
-        const {data:teacherSubjectsData, error: teacherSubjectsError} = await supabase
-        .from("teacher_subjects")
+        const {data:schedulesData, error: schedulesError} = await supabase
+        .from("schedules")
         .update([
             {
                 teacher_id,
                 subject_id,
+                day_of_week,
+                start_time,
+                end_time,
             }
         ])
         .eq("id",id)
         .select()
 
-        if (teacherSubjectsError) {
-            return res.status(400).json({message: 'Error al actualizar la clase', error: teacherSubjectsError.message});
+        if (schedulesError) {
+            return res.status(400).json({message: 'Error al actualizar el horario', error: schedulesError.message});
         }
 
         res.status(201).json({
-        message: 'Clase actualizada exitosamente.',
+        message: 'Horario actualizado exitosamente.',
         });
     } catch (err) {
-        console.error("ERROR EN patchTeacherSubjects:", err)
+        console.error("ERROR EN patchSchedules:", err)
 
         res.status(500).json({
             message: "Internal server error"
@@ -129,10 +139,10 @@ export const patchTeacherSubjects = async (req, res) => {
 }
 
 // Eliminar clase
-export const delTeacherSubjects = async (req,res) => {
+export const delSchedules = async (req,res) => {
     try {
         const { id } = req.params
-        if (!id) return res.status(400).json({ message: "Id de la clase requerido" })
+        if (!id) return res.status(400).json({ message: "Id del horario requerido" })
 
         if(!req.user){
             return res.status(401).json({
@@ -142,16 +152,16 @@ export const delTeacherSubjects = async (req,res) => {
 
         // Eliminar de forma logica
         const { data, error } = await supabase
-        .from("teacher_subjects")
+        .from("schedules")
         .update({ is_active: false })
         .eq("id", id)
         .select()
 
         // Respuesta al front
-        return res.json({ message: "Clase eliminada correctamente"})
+        return res.json({ message: "Horario eliminado correctamente"})
 
     } catch (err) {
-        console.error("ERROR EN delTeacherSubjects:", err);
+        console.error("ERROR EN delSchedules:", err);
         res.status(500).json({ error: err.message });
     }
 }

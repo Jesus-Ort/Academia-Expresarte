@@ -67,7 +67,7 @@ export const studentRepresentativesCrud = {
         options: [
             { label: 'Mamá', value: 'Mamá' },
             { label: 'Papá', value: 'Papá' },
-            { label: 'Otro', value: 'Otro ' }
+            { label: 'Otro', value: 'Otro' }
         ]
         },
     ]

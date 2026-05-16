@@ -84,6 +84,13 @@ export const demoCrud = {
         type: 'date'
     },
 
+    // TIEMPO
+    {
+        key: 'start_time',
+        label: 'Hora de Inicio',
+        type: 'time'
+        },
+
     // TEXTAREA
     {
         key: 'descripcion',

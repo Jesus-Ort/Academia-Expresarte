@@ -156,7 +156,7 @@ const getValue = (obj: any, path: string) => {
 // COLUMNS AUTO (simple)
 // ----------------------
 const columns = computed(() => {
-  const base = props.config.fields.map((f: any) => {
+    const base = props.config.fields.map((f: any) => {
 
     if (f.display) {
       return {
@@ -164,6 +164,59 @@ const columns = computed(() => {
         header: f.label,
         cell: ({ row }: any) =>
           getValue(row.original, f.display)
+      }
+    }
+
+    // If a custom cell renderer is provided in the field definition, use it
+    if (f.cell && typeof f.cell === 'function') {
+      return {
+        id: f.key,
+        header: f.label,
+        cell: ({ row }: any) => f.cell({ row })
+      }
+    }
+
+    // Formateo de tiempo a 12h
+    if (f.type === 'time') {
+      return {
+        id: f.key,
+        header: f.label,
+        cell: ({ row }: any) => {
+          const val = getValue(row.original, f.key)
+          if (!val) return ''
+          try {
+            return new Date(`1970-01-01T${val}`).toLocaleTimeString('en-US', {
+              hour: 'numeric',
+              minute: '2-digit',
+              hour12: true
+            })
+          } catch (e) {
+            return val
+          }
+        }
+      }
+    }
+
+    // Formateo de las fechas dia/mes/año
+    if (f.type === 'date') {
+      return {
+        id: f.key,
+        header: f.label,
+        cell: ({ row }: any) => {
+          const val = getValue(row.original, f.key)
+          if (!val) return ''
+          try {
+            const d = new Date(val)
+            if (isNaN(d.getTime())) return val
+            return d.toLocaleDateString('es-ES', {
+              day: '2-digit',
+              month: '2-digit',
+              year: 'numeric'
+            })
+          } catch (e) {
+            return val
+          }
+        }
       }
     }
 

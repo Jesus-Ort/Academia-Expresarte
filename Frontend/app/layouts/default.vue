@@ -91,9 +91,9 @@ const items: DropdownMenuItem[][] = [
         to: '/studentRepresentatives'
         },
         {
-        label: 'Clases',
+        label: 'Horarios',
         icon: 'i-heroicons-user',
-        to: '/teacherSubjects'
+        to: '/schedules'
         },
     ],
     [

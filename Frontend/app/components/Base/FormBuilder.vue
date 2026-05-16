@@ -87,6 +87,13 @@
             class="w-full"
         />
 
+        <!-- TIME -->
+        <UInputTime
+            v-else-if="f.type === 'time'"
+            v-model="form[f.key]"
+            class="w-full"
+        />
+
         <!-- CHECKBOX -->
         <UCheckbox
             v-else-if="f.type === 'checkbox'"
