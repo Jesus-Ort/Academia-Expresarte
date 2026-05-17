@@ -60,24 +60,27 @@ const loadingTable = ref(false)
 const loadingForm = ref(false)
 
 const data = ref<any[]>([])
-const editId = ref<string | null>(null)
+const editId = ref<string | number | null>(null)
+const isEditing = ref(false)
 
 const form = reactive({})
 
 const resetForm = () => {
   Object.assign(form, props.config.form.initial)
+  editId.value = null
+  isEditing.value = false
 }
 
 const { buildPayload } = useFormBuilder(form, editId, props.config.fields)
 
 const modalTitle = computed(() =>
-  editId.value
+  isEditing.value
     ? `Editar ${props.config.title}`
     : `Crear ${props.config.title}`
 )
 
 const submitLabel = computed(() =>
-  editId.value
+  isEditing.value
     ? `Actualizar ${props.config.title}`
     : `Crear ${props.config.title}`
 )
@@ -108,7 +111,6 @@ const load = async () => {
 const openCreate = () => {
   if (props.config.disableCreate) return
 
-  editId.value = null
   resetForm()
   open.value = true
 }
@@ -116,7 +118,8 @@ const openCreate = () => {
 // EDIT
 // ----------------------
 const openEdit = (row: any) => {
-  editId.value = row.id
+  editId.value = row.id ?? row.schedule_id ?? row.scheduleId ?? null
+  isEditing.value = true
   Object.assign(form, row)
   open.value = true
 }
@@ -129,8 +132,9 @@ const handleSubmit = async (values: any) => {
 
   try {
     const payload = buildPayload(values)
+    const isUpdate = editId.value !== null && editId.value !== undefined
 
-    if (!editId.value) {
+    if (!isUpdate) {
       await api.post(resource.value.create, payload)
       toast.add({ title: 'Éxito', description: `${props.config.title} creado correctamente`, color: 'success' })
     } else {

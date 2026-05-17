@@ -94,7 +94,6 @@ export const schedulesCrud = {
         key: 'end_time',
         label: 'Hora de Salida',
         type: 'time',
-        
         },
     ]
 }

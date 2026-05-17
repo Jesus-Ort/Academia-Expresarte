@@ -5,7 +5,7 @@
     const props = defineProps<{
     fields: any[]
     form: Record<string, any>
-    editId: string | null
+    editId: string | number | null | undefined
     }>()
 
     // 🔥 convertir a ref reactivo
@@ -88,8 +88,9 @@
         />
 
         <!-- TIME -->
-        <UInputTime
+        <UInput
             v-else-if="f.type === 'time'"
+            type="time"
             v-model="form[f.key]"
             class="w-full"
         />

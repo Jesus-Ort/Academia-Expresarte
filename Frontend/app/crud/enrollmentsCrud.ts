@@ -1,5 +1,18 @@
 import * as yup from 'yup'
 
+const formatTime12h = (time: string) => {
+    if (!time) return ''
+    try {
+        return new Date(`1970-01-01T${time}`).toLocaleTimeString('en-US', {
+        hour: 'numeric',
+        minute: '2-digit',
+        hour12: true,
+        })
+    } catch {
+        return time
+    }
+}
+
 export const enrollmentsCrud = {
     title: 'Asignado',
 
@@ -53,8 +66,8 @@ export const enrollmentsCrud = {
         cell: ({ row }: any) => {
             const schedule = row.original
             const day = schedule.day_of_week || ''
-            const start = schedule.start_time || ''
-            const end = schedule.end_time || ''
+            const start = formatTime12h(schedule.start_time || '')
+            const end = formatTime12h(schedule.end_time || '')
             const subject = schedule.subject_catedra || schedule.catedra || schedule.nombre_catedra || ''
             const teacher = schedule.nombre_profesor || ''
             return `${day} ${start ? `${start} - ${end}` : ''}${subject ? ` | ${subject}` : ''}${teacher ? ` | ${teacher}` : ''}`
@@ -62,7 +75,7 @@ export const enrollmentsCrud = {
 
         relation: {
             resource: '/api/v1/schedules',
-            label: (item: any) => `${item.day_of_week} ${item.start_time} - ${item.end_time} | ${item.subject_catedra || item.catedra || item.nombre_catedra || ''} | ${item.nombre_profesor || ''}`,
+            label: (item: any) => `${item.day_of_week} ${formatTime12h(item.start_time || '')} - ${formatTime12h(item.end_time || '')} | ${item.subject_catedra || item.catedra || item.nombre_catedra || ''} | ${item.nombre_profesor || ''}`,
             value: 'schedule_id',
         }
         },
