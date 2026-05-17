@@ -3,6 +3,9 @@ import * as yup from 'yup'
 export const demoCrud = {
     title: 'Demo',
 
+    disableCreate: true,
+
+
     apiBase: {
         list: '/api/demo',
         create: '/api/demo',
@@ -114,6 +117,7 @@ export const demoCrud = {
     key: 'rol_id',
     label: 'Rol',
     type: 'relation',
+    display: 'representative.nombre_completo', // Para que muestre otra cosa de la tabla y no el ID
 
     relation: {
         resource: '/api/v1/roles',   // endpoint
@@ -127,7 +131,10 @@ export const demoCrud = {
     {
         key: 'activo',
         label: 'Activo',
-        type: 'switch'
+        type: 'switch',
+        showOnCreate: false,
+        showOnEdit: false,
+        showOnTable: false,
     },
 
     // FILE

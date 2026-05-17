@@ -26,6 +26,7 @@ export type FieldOption = {
 
     showOnCreate?: boolean
     showOnEdit?: boolean
+    showOnTable?: boolean
     disabledOnEdit?: boolean
 
     multiple?: boolean

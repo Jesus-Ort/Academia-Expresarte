@@ -156,7 +156,9 @@ const getValue = (obj: any, path: string) => {
 // COLUMNS AUTO (simple)
 // ----------------------
 const columns = computed(() => {
-    const base = props.config.fields.map((f: any) => {
+    const base = props.config.fields
+      .filter((f: any) => f.showOnTable !== false)
+      .map((f: any) => {
 
     if (f.display) {
       return {

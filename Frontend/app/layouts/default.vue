@@ -81,19 +81,24 @@ const items: DropdownMenuItem[][] = [
         to: '/teachers'
         },
         {
-        label: 'Catedras',
-        icon: 'i-heroicons-user',
-        to: '/subjects'
-        },
-        {
         label: 'Representados',
-        icon: 'i-heroicons-user',
+        icon: 'i-heroicons-users',
         to: '/studentRepresentatives'
         },
         {
+        label: 'Catedras',
+        icon: 'i-heroicons-pencil-square',
+        to: '/subjects'
+        },
+        {
         label: 'Horarios',
-        icon: 'i-heroicons-user',
+        icon: 'i-heroicons-calendar-days',
         to: '/schedules'
+        },
+        {
+        label: 'Clases',
+        icon: 'i-heroicons-book-open',
+        to: '/enrollments'
         },
     ],
     [

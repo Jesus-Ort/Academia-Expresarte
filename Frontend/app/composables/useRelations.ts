@@ -23,12 +23,28 @@ export const useRelations = () => {
         return cache[url]
     }
 
+    const getRelationLabel = (field: any, item: any) => {
+        if (typeof field.relation.label === 'function') {
+            return field.relation.label(item)
+        }
+
+        return item[field.relation.label]
+    }
+
+    const getRelationValue = (field: any, item: any) => {
+        if (typeof field.relation.value === 'function') {
+            return field.relation.value(item)
+        }
+
+        return item[field.relation.value]
+    }
+
     const getOptions = async (field: any, form: any) => {
         const data = await load(field, form)
 
         return data.map((item: any) => ({
-        label: item[field.relation.label],
-        value: item[field.relation.value]
+        label: getRelationLabel(field, item),
+        value: getRelationValue(field, item)
         }))
     }
 
