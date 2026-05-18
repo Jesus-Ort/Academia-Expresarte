@@ -120,9 +120,9 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
     try {
         loading.value = true
 
-        const { isLogged } = useAuth()
+        const { isLogged, setUser } = useAuth()
 
-    const res = await $fetch<{ access_token: string; refresh_token: string }>('/api/v1/auth/login', {
+    const res = await $fetch<{ access_token: string; refresh_token: string; user?: { rol?: string } }>('/api/v1/auth/login', {
         baseURL: config.public.apiBase,
         method: 'POST',
         body: {
@@ -133,6 +133,11 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
 
     localStorage.setItem('access_token', res.access_token)
     localStorage.setItem('refresh_token', res.refresh_token)
+    if (res.user?.rol) {
+        setUser(res.user)
+    } else {
+        setUser(null)
+    }
 
         isLogged.value = true
 

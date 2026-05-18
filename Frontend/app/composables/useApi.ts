@@ -24,6 +24,7 @@ export const useApi = () => {
     const clearAuth = async () => {
         localStorage.removeItem('access_token')
         localStorage.removeItem('refresh_token')
+        localStorage.removeItem('user_role')
         await navigateTo('/login')
     }
 
@@ -54,6 +55,12 @@ export const useApi = () => {
             if (!res?.access_token) {
             await clearAuth()
             return null
+            }
+
+            if (res.user?.rol) {
+                localStorage.setItem('user_role', res.user.rol)
+            } else {
+                localStorage.removeItem('user_role')
             }
 
             setAccessToken(res.access_token)

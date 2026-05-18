@@ -92,31 +92,51 @@ export const login = async (req, res) => {
         if (!email || !password) {
             return res.status(400).json({
                 message: "Email y contraseña son obligatorios"
-            });
+            })
         }
 
         const { data, error } = await supabase.auth.signInWithPassword({
             email,
             password
-        })        
+        })
 
         if (error) {
-        console.error(error)
+            console.error(error)
 
-        return res.status(401).json({
-            message: "Credenciales inválidas"
-        })
+            return res.status(401).json({
+                message: "Credenciales inválidas"
+            })
         }
 
         if (!data.session) {
-            return res.status(400).json({ message: 'Usuario no tiene sesión activa o no ha confirmado correo' })
+            return res.status(400).json({
+                message: 'Usuario no tiene sesión activa o no ha confirmado correo'
+            })
+        }
+
+        const userId = data.user?.id
+
+        const { data: profileData, error: profileError } = await supabase
+            .from('profiles')
+            .select('*')
+            .eq('id', userId)
+            .single()
+
+        if (profileError) {
+            console.error(profileError)
+
+            return res.status(404).json({
+                message: 'Perfil no encontrado'
+            })
         }
 
         res.json({
             message: 'Inicio de sesión exitoso',
             access_token: data.session.access_token,
             refresh_token: data.session.refresh_token,
+            user: profileData
         })
+
     } catch (err) {
         console.error(err)
 

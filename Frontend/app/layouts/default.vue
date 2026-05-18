@@ -51,72 +51,90 @@
 </template>
 
 <script setup lang="ts">
+import { computed, onMounted } from 'vue'
 import type { DropdownMenuItem } from '@nuxt/ui'
 import { useAuth } from '~/composables/useAuth'
 
-const { isLogged, checkAuth, logout } = useAuth()
+const { isLogged, isAdmin, checkAuth, logout } = useAuth()
 
-const items: DropdownMenuItem[][] = [
-    [
+const items = computed<DropdownMenuItem[][]>(() => {
+    const menuGroups = [
         {
-        label: 'Inicio',
-        icon: 'i-heroicons-home',
-        to: '/home'
-        },
-    ],
-    [
-        {
-        label: 'Usuarios',
-        icon: 'i-heroicons-user',
-        to: '/profiles'
+            items: [
+                {
+                label: 'Inicio',
+                icon: 'i-heroicons-home',
+                to: '/home'
+                }
+            ]
         },
         {
-        label: 'Estudiantes',
-        icon: 'i-heroicons-user',
-        to: '/students'
-        },
-        {
-        label: 'Profesores',
-        icon: 'i-heroicons-user',
-        to: '/teachers'
-        },
-        {
-        label: 'Representados',
-        icon: 'i-heroicons-users',
-        to: '/studentRepresentatives'
-        },
-        {
-        label: 'Catedras',
-        icon: 'i-heroicons-pencil-square',
-        to: '/subjects'
-        },
-        {
-        label: 'Horarios',
-        icon: 'i-heroicons-calendar-days',
-        to: '/schedules'
-        },
-        {
-        label: 'Clases',
-        icon: 'i-heroicons-book-open',
-        to: '/enrollments'
-        },
-    ],
-    [
+            adminOnly: true,
+            items: [
+                {
+                label: 'Representantes',
+                icon: 'i-heroicons-user',
+                to: '/profiles'
+                },
+                {
+                label: 'Estudiantes',
+                icon: 'i-heroicons-user',
+                to: '/students'
+                },
+                {
+                label: 'Profesores',
+                icon: 'i-heroicons-user',
+                to: '/teachers'
+                },
+                {
+                label: 'Representados',
+                icon: 'i-heroicons-users',
+                to: '/studentRepresentatives'
+                },
+                {
+                label: 'Catedras',
+                icon: 'i-heroicons-pencil-square',
+                to: '/subjects'
+                },
+                {
+                label: 'Horarios',
+                icon: 'i-heroicons-calendar-days',
+                to: '/schedules'
+                },
+                {
+                label: 'Clases',
+                icon: 'i-heroicons-book-open',
+                to: '/enrollments'
+                }
+            ]
+        }
+    ]
+
+    const menu: DropdownMenuItem[][] = []
+
+    menuGroups.forEach(group => {
+        if (group.adminOnly && !isAdmin.value) return
+        menu.push(group.items)
+    })
+
+    menu.push([
         {
         label: 'Configuración',
         icon: 'i-heroicons-cog-6-tooth',
         to: '/settings'
         }
-    ],
-    [
+    ])
+    menu.push([
         {
         label: 'Cerrar sesión',
         icon: 'i-heroicons-arrow-left-on-rectangle',
         color: 'error',
         onSelect:  logout
         }
-    ]
-]
+    ])
+
+    return menu
+})
 
 onMounted(() => {
     checkAuth()

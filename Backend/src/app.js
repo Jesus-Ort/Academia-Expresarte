@@ -4,6 +4,7 @@ import cors from 'cors'
 import { verifyToken } from './middlewares/verifyToken.js'
 
 import authRoutes from "./routes/auth.js";
+import dashboardRoutes from "./routes/dashboard.js";
 import usersRoutes from "./routes/user.js";
 import studentsRoutes from "./routes/student.js"
 import teachersRoutes from "./routes/teachers.js"
@@ -25,6 +26,7 @@ app.get('/test', (req, res) => {
 
 // Rutas
 app.use("/api/v1/auth", authRoutes); 
+app.use("/api/v1/dashboard", verifyToken, dashboardRoutes); 
 app.use("/api/v1/users", verifyToken, usersRoutes); 
 app.use("/api/v1/students", verifyToken, studentsRoutes); 
 app.use("/api/v1/teachers", verifyToken, teachersRoutes); 
