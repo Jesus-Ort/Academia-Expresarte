@@ -1,3 +1,3 @@
 User-Agent: *
 Allow: /
-Sitemap: https://expresarte.com/sitemap.xml
+Sitemap: https://academia-expresarte.vercel.app/sitemap.xml

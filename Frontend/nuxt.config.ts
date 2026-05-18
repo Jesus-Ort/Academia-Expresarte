@@ -4,12 +4,12 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
   modules: ['@nuxt/ui', '@nuxtjs/sitemap'],
   sitemap: {
-    siteUrl: 'https://expresarte.com'
+    siteUrl: 'academia-expresarte.vercel.app'
   },
   css: ['~/assets/css/main.css'],
   runtimeConfig: {
     public: {
-      apiBase: 'http://localhost:3001'
+      apiBase: 'https://academia-expresarte.onrender.com'
     }
   }
 })
