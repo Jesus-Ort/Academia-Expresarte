@@ -74,6 +74,10 @@ useHead({
     {
       name: 'apple-mobile-web-app-title',
       content: 'Expresarte'
+    },
+    {
+      name: 'google-site-verification',
+      content: '0lGo8r6cCL0nE4g8poxOnb5t4hEcYNdjr0DSX9NTMQE'
     }
   ],
 
