@@ -156,6 +156,20 @@ const getValue = (obj: any, path: string) => {
   return path.split('.').reduce((acc, key) => acc?.[key], obj)
 }
 
+const parseDateValue = (value: any) => {
+  if (typeof value !== 'string') {
+    return new Date(value)
+  }
+
+  const dateOnly = value.match(/^(\d{4})-(\d{2})-(\d{2})$/)
+  if (dateOnly) {
+    const [, year, month, day] = dateOnly
+    return new Date(Number(year), Number(month) - 1, Number(day))
+  }
+
+  return new Date(value)
+}
+
 // ----------------------
 // COLUMNS AUTO (simple)
 // ----------------------
@@ -212,7 +226,7 @@ const columns = computed(() => {
           const val = getValue(row.original, f.key)
           if (!val) return ''
           try {
-            const d = new Date(val)
+            const d = parseDateValue(val)
             if (isNaN(d.getTime())) return val
             return d.toLocaleDateString('es-ES', {
               day: '2-digit',

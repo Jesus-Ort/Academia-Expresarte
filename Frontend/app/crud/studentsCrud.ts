@@ -44,6 +44,7 @@ export const studentsCrud = {
     fields: [
         { key: 'nombre_completo', label: 'Nombre', type: 'text' },
         { key: 'cedula', label: 'Cédula', type: 'text' },
-        { key: 'fecha_nacimiento', label: 'Fecha de Nacimiento', type: 'date'}
+        { key: 'fecha_nacimiento', label: 'Fecha de Nacimiento', type: 'date'},
+        { key: 'edad', label: 'Edad', type: 'text', disabledOnEdit:true, showOnCreate:false }
     ]
 }
