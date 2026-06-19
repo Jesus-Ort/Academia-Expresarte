@@ -85,6 +85,8 @@ export const useApi = () => {
         add(async () => {
             try {
             const res = await $fetch(`${config.public.apiBase}${url}`, {
+                // Evitar respuestas cacheadas del navegador (304) durante desarrollo
+                cache: options.cache ?? 'no-store',
                 ...options,
                 headers: {
                 Authorization: getAccessToken()
