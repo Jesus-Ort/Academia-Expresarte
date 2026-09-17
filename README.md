@@ -9,7 +9,7 @@ El proyecto fue diseñado con una arquitectura desacoplada entre frontend y back
 ## 🌐 Demo
 
 **Aplicación:**
-https://academia-expresarte.vercel.app
+academia-expresarte.jesusortega.xyz/
 
 ## 📌 Características
 
